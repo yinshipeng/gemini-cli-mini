@@ -26,13 +26,15 @@ program
   .command('chat')
   .description('Start interactive chat session')
   .option('-d, --dir <path>', 'Working directory', process.cwd())
+  .option('--mcp-server <command>', 'MCP server command to start')
   .action(async (options) => {
     console.log(chalk.blue('🚀 Starting Mini Gemini CLI...'));
     console.log(chalk.gray(`Working directory: ${options.dir}`));
     
     const client = new MiniGeminiClient({
       workingDir: options.dir,
-      apiKey: process.env.GEMINI_API_KEY
+      apiKey: process.env.GEMINI_API_KEY,
+      mcpServerCommand: options.mcpServer
     });
 
     try {
@@ -42,6 +44,8 @@ program
       process.exit(1);
     }
   });
+
+
 
 program
   .command('demo')

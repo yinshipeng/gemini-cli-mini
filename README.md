@@ -1,6 +1,8 @@
-# Gemini CLI Mini 🎯
+# Gemini CLI Mini
 
-一个**极致精简**的Gemini CLI实现，专为学习和理解核心架构而设计。
+一个极简版的Gemini CLI工具，用于学习和理解现代AI CLI工具的核心架构。
+
+**现在支持 MCP (Model Context Protocol)！** 可以连接外部工具和服务来扩展功能。
 
 ## 🚀 项目定位
 
@@ -125,7 +127,7 @@ AI: This seems complex. Let me break this down...
 |---|---|---|---|
 | 代码行数 | ~5000行 | <500行 | 保留核心逻辑 |
 | 传输方式 | SSE+HTTP+OAuth | 模拟API | 专注架构模式 |
-| 工具数量 | 11+内置+MCP | 3个基础工具 | 演示扩展机制 |
+| 工具数量 | 11+内置 | 3个基础工具 | 演示扩展机制 |
 | 记忆系统 | 复杂压缩+上下文 | 简单追加 | 保持核心功能 |
 | UI框架 | React+Ink | 纯Node.js | 简化交互层 |
 
@@ -167,7 +169,7 @@ export class YourTool {
 }
 
 // 在client.js中注册
-this.toolRegistry.register(new YourTool());
+this.toolRegistry.registerTool(new YourTool());
 ```
 
 ### 集成真实Gemini API
@@ -185,6 +187,29 @@ async callGeminiAPI(message) {
     };
 }
 ```
+
+### 使用 MCP 工具
+
+现在支持通过 Model Context Protocol (MCP) 连接外部工具和服务：
+
+```bash
+# 启动带有 MCP 服务器的聊天会话
+npm start chat -- --mcp-server "npx @modelcontextprotocol/server-filesystem"
+
+# 或者通过配置文件配置 MCP 服务器
+echo '{
+  "servers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-filesystem"]
+    }
+  }
+}' > mcp-config.json
+
+npm start chat
+```
+
+更多 MCP 使用信息请查看 [docs/MCP.md](docs/MCP.md)。
 
 ## 📖 架构总结
 

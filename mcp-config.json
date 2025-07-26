@@ -1,0 +1,11 @@
+{
+  "servers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-filesystem", "--port", "3001"]
+    },
+    "github": {
+      "httpUrl": "https://api.github.com"
+    }
+  }
+}
