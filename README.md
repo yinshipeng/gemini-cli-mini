@@ -2,8 +2,6 @@
 
 一个极简版的Gemini CLI工具，用于学习和理解现代AI CLI工具的核心架构。
 
-**现在支持 MCP (Model Context Protocol)！** 可以连接外部工具和服务来扩展功能。
-
 ## 🚀 项目定位
 
 这个项目的目的是：**用最小的代码量展示Gemini CLI的核心架构模式**
@@ -24,79 +22,6 @@ gemini-cli-mini/
 │   └── tools/          # 工具层：文件操作、记忆存储
 ├── docs/               # 架构文档
 └── package.json
-```
-
-### 2. 核心设计模式
-
-#### 🔄 递归对话模式
-```javascript
-// 核心机制：AI自我对话
-if (next_speaker === 'model') {
-    yield* this.sendMessageStream('Please continue.');
-}
-```
-**作用**: 让AI能够分阶段思考复杂问题
-
-#### 🧰 插件式工具系统
-```javascript
-// 工具注册机制
-class ToolRegistry {
-    register(tool) { this.tools.set(tool.name, tool); }
-    getFunctionDeclarations() { /* 动态发现工具 */ }
-}
-```
-**作用**: 可扩展的工具管理
-
-#### 📝 持久化记忆
-```javascript
-// 记忆存储：~/.gemini-mini/memory.md
-## Gemini Added Memories
-- 用户喜欢蓝色
-- 项目使用TypeScript
-```
-**作用**: 跨会话的个性化体验
-
-## 🔧 快速开始
-
-### 安装
-```bash
-cd /Users/yinshipeng/workspace/gemini-cli-mini
-npm install
-```
-
-### 设置API密钥
-```bash
-export GEMINI_API_KEY=your_api_key_here
-```
-
-### 运行
-```bash
-# 启动交互式会话
-npm start chat
-
-# 运行演示
-npm start demo
-```
-
-## 🎯 核心功能演示
-
-### 1. 交互式对话
-```bash
-$ npm start chat
-🤖 Mini Gemini Chat Started!
-You: 记住我喜欢蓝色
-AI: I'll remember that: "我喜欢蓝色"
-You: 读取文件src/example.js
-AI: I can help you read files...
-```
-
-### 2. 递归思考演示
-```bash
-$ npm start demo
-🎯 Running Demo...
-User: Analyze this complex code architecture problem
-AI: This seems complex. Let me break this down...
-🔄 AI continues thinking...
 ```
 
 ## 📚 架构学习要点
@@ -120,16 +45,6 @@ AI: This seems complex. Let me break this down...
 - **实时响应**: 逐字显示AI回复
 - **中断处理**: 支持Ctrl+C中断
 - **错误恢复**: 优雅处理网络/API错误
-
-## 🔍 与原版对比
-
-| 功能 | 原版 | Mini版 | 精简说明 |
-|---|---|---|---|
-| 代码行数 | ~5000行 | <500行 | 保留核心逻辑 |
-| 传输方式 | SSE+HTTP+OAuth | 模拟API | 专注架构模式 |
-| 工具数量 | 11+内置 | 3个基础工具 | 演示扩展机制 |
-| 记忆系统 | 复杂压缩+上下文 | 简单追加 | 保持核心功能 |
-| UI框架 | React+Ink | 纯Node.js | 简化交互层 |
 
 ## 🎓 学习路径
 
@@ -187,29 +102,6 @@ async callGeminiAPI(message) {
     };
 }
 ```
-
-### 使用 MCP 工具
-
-现在支持通过 Model Context Protocol (MCP) 连接外部工具和服务：
-
-```bash
-# 启动带有 MCP 服务器的聊天会话
-npm start chat -- --mcp-server "npx @modelcontextprotocol/server-filesystem"
-
-# 或者通过配置文件配置 MCP 服务器
-echo '{
-  "servers": {
-    "filesystem": {
-      "command": "npx",
-      "args": ["@modelcontextprotocol/server-filesystem"]
-    }
-  }
-}' > mcp-config.json
-
-npm start chat
-```
-
-更多 MCP 使用信息请查看 [docs/MCP.md](docs/MCP.md)。
 
 ## 📖 架构总结
 

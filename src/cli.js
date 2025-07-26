@@ -33,8 +33,7 @@ program
     
     const client = new MiniGeminiClient({
       workingDir: options.dir,
-      apiKey: process.env.GEMINI_API_KEY,
-      mcpServerCommand: options.mcpServer
+      apiKey: process.env.GEMINI_API_KEY
     });
 
     try {

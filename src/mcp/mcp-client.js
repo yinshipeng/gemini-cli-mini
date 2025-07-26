@@ -6,15 +6,10 @@
 
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
-import {
-  SSEClientTransport,
-  SSEClientTransportOptions,
-} from '@modelcontextprotocol/sdk/client/sse.js';
-import {
-  StreamableHTTPClientTransport,
-  StreamableHTTPClientTransportOptions,
-} from '@modelcontextprotocol/sdk/client/streamableHttp.js';
+import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js';
+import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 import { parse } from 'shell-quote';
+import { mcpToTool } from '@google/genai';
 
 // MCP 默认超时时间 (10分钟)
 export const MCP_DEFAULT_TIMEOUT_MSEC = 10 * 60 * 1000;
@@ -279,6 +274,10 @@ export async function connectToMcpServer(
   const mcpClient = new Client({
     name: 'gemini-cli-mcp-client',
     version: '0.0.1',
+  }, {
+    capabilities: {
+      tools: {}
+    }
   });
 
   // patch Client.callTool to use request timeout as genai McpCallTool.callTool does not do it
@@ -404,41 +403,6 @@ export function isEnabled(
       (tool) => tool === funcDecl.name || tool.startsWith(`${funcDecl.name}(`),
     )
   );
-}
-
-/**
- * Converts an MCP client to a tool that can be used by the Gemini CLI
- */
-function mcpToTool(mcpClient) {
-  return {
-    async tool() {
-      // Get the list of available tools from the MCP server
-      const listResult = await mcpClient.request({
-        method: 'tools/list',
-      });
-      
-      return {
-        functionDeclarations: listResult.tools.map(tool => ({
-          name: tool.name,
-          description: tool.description,
-          parametersJsonSchema: tool.inputSchema
-        }))
-      };
-    },
-    
-    async execute(toolName, args) {
-      // Execute a tool on the MCP server
-      const result = await mcpClient.request({
-        method: 'tools/call',
-        params: {
-          name: toolName,
-          arguments: args
-        }
-      });
-      
-      return result;
-    }
-  };
 }
 
 /**
